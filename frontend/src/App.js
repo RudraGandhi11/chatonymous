@@ -6,7 +6,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import PageNotFound from './PageNotFound';
 
 function App() {
-  const socket = io("http://localhost:8000")
+  const socket = io("https://chatonymous-n12s.onrender.com")
 
   return (
     <>
