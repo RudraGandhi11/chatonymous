@@ -92,15 +92,15 @@ const ChatRoom = (props) => {
                             );
                         })}
                     </div>
-                    <div className="p-4 flex">
+                    <div className="p-4 flex flex-col sm:flex-row sm:flex-wrap">
                         <input
                             value={messageSend} // Bind the input value to the state
                             placeholder={'Type your message'}
                             onChange={setMessage}
-                            className="border border-gray-300 rounded-lg flex-grow px-3 py-2 mr-2"
+                            className="border border-gray-300 rounded-lg flex-grow px-3 py-2 mr-2 mb-2 sm:mb-0"
                         />
-                        <button onClick={sendMessage} className="bg-teal-500 text-white py-2 px-4 rounded">Send</button>
-                        <button onClick={skipChat} className="bg-red-500 text-white py-2 px-4 rounded ml-2">Skip</button>
+                        <button onClick={sendMessage} className="bg-teal-500 text-white py-2 px-4 rounded mb-2 sm:mb-0">Send</button>
+                        <button onClick={skipChat} className="bg-red-500 text-white py-2 px-4 rounded ml-0 sm:ml-2">Skip</button>
                     </div>
                 </div>
             </div>
