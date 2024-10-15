@@ -18,7 +18,14 @@ const Login = (props) => {
     }, []);
 
     const onEntered = () => {
-        socket.emit("checkUsernameAvaibility", username);
+        if(username)
+        {
+            socket.emit("checkUsernameAvaibility", username);
+        }
+        else
+        {
+            alert('Username cannot be empty')
+        }
     };
 
     if (usernameIsAvailable === 1) {
