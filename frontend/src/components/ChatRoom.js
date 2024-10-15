@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 const ChatRoom = (props) => {
     const [senderUsername, setSenderUsername] = useState();
@@ -7,8 +7,11 @@ const ChatRoom = (props) => {
     const [messageSend, setMessageSend] = useState('');
     const [chatMessages, setChatMessage] = useState([]);
     const [gotSkipped, setGotSkipped] = useState();
+    const [userIsTyping, setUserIsTyping] = useState(false);
     const socket = props.props.socket;
     const username = props.props.username;
+
+    const chatContainerRef = useRef(null);  // Create a reference for the chat container
 
     useEffect(() => {
         socket.emit("checkWaitingList", username);
@@ -27,19 +30,36 @@ const ChatRoom = (props) => {
             setGotSkipped(data.gotSkipped);
         });
 
+        socket.on("is-typing", (data) => {
+            setUserIsTyping(data.isTyping);
+            setTimeout(() => {
+                setUserIsTyping(false);
+            }, 3000);
+        });
+
         return () => {
             socket.off("connected-pair");
             socket.off("recieve-message");
+            socket.off("is-typing");
         };
     }, []);
 
+    useEffect(() => {
+        // Scroll to bottom whenever chatMessages changes
+        if (chatContainerRef.current) {
+            chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+        }
+    }, [chatMessages]); // Trigger when chatMessages array changes
+
     const sendMessage = () => {
         socket.emit("send-message", { toUser: recipientUsername, fromUser: senderUsername, content: messageSend });
+        socket.emit("user-is-typing", { userIsTyping: false, toUser: recipientUsername });
         setChatMessage(prevMessages => [...prevMessages, { toUser: recipientUsername, fromUser: senderUsername, content: messageSend }]);
         setMessageSend(''); // Clear the input field after sending the message
     };
 
     const setMessage = (event) => {
+        socket.emit("user-is-typing", { userIsTyping: true, toUser: recipientUsername });
         setMessageSend(event.target.value);
     };
 
@@ -78,9 +98,11 @@ const ChatRoom = (props) => {
                 <div className="border-4 border-teal-500 w-full md:w-2/3 lg:w-1/2 h-3/4 bg-gray-100 flex flex-col">
                     <div className="bg-teal-200 p-4 flex items-center justify-between">
                         <h2 className="font-bold">{recipientUsername}</h2>
-                        <div className="w-8 h-8 bg-teal-300 rounded-full"></div> {/* Placeholder for account logo */}
+                        {/* Display sender's username */}
+                        <p className="text-teal-700 font-bold">{senderUsername}</p>
                     </div>
-                    <div className="flex-grow p-4 overflow-y-auto">
+                    {/* Chat message container */}
+                    <div ref={chatContainerRef} className="flex-grow p-4 overflow-y-auto">
                         {chatMessages.map((messages, index) => {
                             const isSender = messages.fromUser === username;
                             return (
@@ -91,6 +113,14 @@ const ChatRoom = (props) => {
                                 </div>
                             );
                         })}
+                        {/* Show typing status if user is typing */}
+                        {userIsTyping && (
+                            <div className="flex justify-start mb-2">
+                                <div className="p-2 bg-gray-200 text-black rounded-lg">
+                                    <p>Typing...</p>
+                                </div>
+                            </div>
+                        )}
                     </div>
                     <div className="p-4 flex flex-col sm:flex-row sm:flex-wrap">
                         <input
@@ -112,6 +142,6 @@ const ChatRoom = (props) => {
             </div>
         );
     }
-}
+};
 
 export default ChatRoom;

@@ -50,6 +50,10 @@ io.on("connection",(socket) => {
         }
     })
 
+    socket.on("user-is-typing",(data) => {
+        socket.to(connected_user[data.toUser]).emit("is-typing",{isTyping:data.userIsTyping})
+    })
+
     socket.on("send-message",(data)=>{
         socket.to(connected_user[data.toUser]).emit("recieve-message",{toUser:data.toUser,fromUser:data.fromUser,content:data.content})
     })
