@@ -67,7 +67,7 @@ const ChatRoom = (props) => {
         return (
             <div className="flex justify-center items-center h-screen">
                 <div className="bg-white p-4 rounded-lg shadow-lg">
-                    <h3 className="text-xl font-bold">{recipientUsername} Skipped You</h3> {/* Increased font size */}
+                    <h3 className="text-2xl font-bold">{recipientUsername} Skipped You</h3> {/* Increased font size */}
                     <button onClick={okButtonClicked} className="bg-teal-500 text-white py-1 px-4 rounded mt-2">Ok</button>
                 </div>
             </div>
@@ -75,7 +75,7 @@ const ChatRoom = (props) => {
     } else if (connected) {
         return (
             <div className="flex justify-center items-center h-screen">
-                <div className="border-4 border-teal-500 w-1/2 h-3/4 bg-gray-100 flex flex-col">
+                <div className="border-4 border-teal-500 w-full md:w-2/3 lg:w-1/2 h-3/4 bg-gray-100 flex flex-col">
                     <div className="bg-teal-200 p-4 flex items-center justify-between">
                         <h2 className="font-bold">{recipientUsername}</h2>
                         <div className="w-8 h-8 bg-teal-300 rounded-full"></div> {/* Placeholder for account logo */}
@@ -108,7 +108,7 @@ const ChatRoom = (props) => {
     } else {
         return (
             <div className="flex justify-center items-center h-screen">
-                <h1 className="text-2xl font-bold">Waiting for a match...</h1> {/* Increased font size */}
+                <h1 className="text-3xl font-bold">Waiting for a match...</h1> {/* Increased font size */}
             </div>
         );
     }
